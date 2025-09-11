@@ -48,7 +48,11 @@ jobs:
             -d '{
               "required_status_checks": null,
               "enforce_admins": true,
-              "required_pull_request_reviews": null,
+              "required_pull_request_reviews":{
+                  "dismiss_stale_reviews": true,       // Auto-dismiss old reviews if new commits are pushed
+                  "require_code_owner_reviews": false, // Require code owner approval (if CODEOWNERS file exists)
+                  "required_approving_review_count": 1 // Number of approvals required (1–6)
+                },
               "restrictions": null
             }' \
             "https://api.github.com/repos/${{ github.event.inputs.organization }}/${{ github.event.inputs.repository }}/branches/${{ github.event.inputs.branch }}/protection" \
