@@ -75,7 +75,7 @@ jobs:
             -o response.json \
             -w "%{http_code}")
             
-          if [ "$response" -ne 200 ]; then
+          if ! [[ "$response" =~ ^2[0-9][0-9]$ ]]; then
             cat response.json
             echo "Failed to lock branch ${{ github.event.inputs.branch }}. HTTP status: $response"
             exit 1
@@ -85,9 +85,18 @@ jobs:
       - name: Unlock Branch
         if: github.event.inputs.action == 'unlock'
         run: |
-          # The 'unlock' action is simply deleting the branch protection rules
-          gh api \
-            --method DELETE \
+          response=$(curl -L \
+            -X DELETE \
             -H "Accept: application/vnd.github+json" \
-            "/repos/${{ github.repository }}/branches/${{ github.event.inputs.branch }}/protection"
-          echo " Branch ${{ github.event.inputs.branch }} is now unlocked."
+            -H "Authorization: Bearer ${{ secrets.ADMIN_PAT }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            https://api.github.com/repos/${{ github.repository }}/branches/${{ github.event.inputs.branch }}/protection \
+            -o response.json \
+            -w "%{http_code}")
+          if ! [[ "$response" =~ ^2[0-9][0-9]$ ]]; then
+            cat response.json
+            echo "Failed to unlock branch ${{ github.event.inputs.branch }}. HTTP status: $response"
+            exit 1
+          fi
+      
+          echo "Branch ${{ github.event.inputs.branch }} is now unlocked."
