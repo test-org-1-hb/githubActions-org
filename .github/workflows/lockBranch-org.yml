@@ -12,7 +12,7 @@ on:
       branch:
         description: "Branch to protect"
         required: true
-        # You could add an unlock step here as well
+        
 
 jobs:
   manage-branch-protection:
@@ -25,7 +25,7 @@ jobs:
       - name: Lock Branch
       
         run: |
-          # Check for required inputs
+          
           if [ -z "${{ github.event.inputs.organization }}" ]; then
             echo "Error: organization is required."
             exit 1
@@ -39,7 +39,7 @@ jobs:
             exit 1
           fi
 
-          # API call using the new inputs
+
           response=$(curl -L \
             -X PUT \
             -H "Accept: application/vnd.github+json" \
