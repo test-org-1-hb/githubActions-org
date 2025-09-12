@@ -1,0 +1,65 @@
+name: Lock or Unlock Branch - 2
+
+on:
+  workflow_dispatch:
+    inputs:
+      organization:
+        description: "The GitHub organization name"
+        required: true
+      repository:
+        description: "The repository name"
+        required: true
+      branch:
+        description: "Branch to protect"
+        required: true
+        # You could add an unlock step here as well
+
+jobs:
+  manage-branch-protection:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up GitHub CLI
+        run: echo "${{ secrets.ADMIN_PAT }}" | gh auth login --with-token
+
+      - name: Lock Branch
+      
+        run: |
+          # Check for required inputs
+          if [ -z "${{ github.event.inputs.organization }}" ]; then
+            echo "Error: organization is required."
+            exit 1
+          fi
+          if [ -z "${{ github.event.inputs.repository }}" ]; then
+            echo "Error: repository is required."
+            exit 1
+          fi
+          if [ -z "${{ github.event.inputs.branch }}" ]; then
+            echo "Error: branch is required."
+            exit 1
+          fi
+          # API call using the new inputs
+          response=$(curl -L \
+            -X PUT \
+            -H "Accept: application/vnd.github+json" \
+            -H "Authorization: Bearer ${{ secrets.ADMIN_PAT }}" \
+            -H "X-GitHub-Api-Version: 2022-11-28" \
+            -d '{
+              "required_status_checks": null,
+              "enforce_admins": true,
+              "required_pull_request_reviews":{
+                  "dismiss_stale_reviews": true,       // Auto-dismiss old reviews if new commits are pushed
+                  "require_code_owner_reviews": false, // Require code owner approval (if CODEOWNERS file exists)
+                  "required_approving_review_count": 1 // Number of approvals required (1–6)
+                },
+              "restrictions": null
+            }' \
+            "https://api.github.com/repos/${{ github.event.inputs.organization }}/${{ github.event.inputs.repository }}/branches/${{ github.event.inputs.branch }}/protection" \
+            -o response.json \
+            -w "%{http_code}")
+          if ! [[ "$response" =~ ^2[0-9][0-9]$ ]]; then
+            cat response.json
+            echo "Failed to lock branch ${{ github.event.inputs.branch }}. HTTP status: $response"
+            exit 1
+          fi
+          echo "Branch ${{ github.event.inputs.branch }} in ${{ github.event.inputs.organization }}/${{ github.event.inputs.repository }} is now locked."
