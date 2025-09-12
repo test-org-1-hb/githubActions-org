@@ -26,20 +26,6 @@ jobs:
       
         run: |
           
-          if [ -z "${{ github.event.inputs.organization }}" ]; then
-            echo "Error: organization is required."
-            exit 1
-          fi
-          if [ -z "${{ github.event.inputs.repository }}" ]; then
-            echo "Error: repository is required."
-            exit 1
-          fi
-          if [ -z "${{ github.event.inputs.branch }}" ]; then
-            echo "Error: branch is required."
-            exit 1
-          fi
-
-
           response=$(curl -L \
             -X PUT \
             -H "Accept: application/vnd.github+json" \
