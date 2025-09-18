@@ -8,4 +8,10 @@ jobs:
     # You need to use the INSTALLATION_NAME from the previous step
     runs-on: arc-runner-set-aks
     steps:
-    - run: echo "🎉 This job uses runner scale set runners!"
+     - name: Echo message
+       run: echo "🎉 This job uses runner scale set runners!"
+
+     - name: Keep job running
+       run: sleep 360
+
+  
