@@ -1,5 +1,5 @@
 
-name: Actions Runner Controller Demo
+name: AKS (Actions Runner Controller Demo)
 on:
   workflow_dispatch:
 
