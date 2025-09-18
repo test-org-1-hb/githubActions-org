@@ -1,10 +1,9 @@
-
 name: AKS (Actions Runner Controller Demo)
 on:
   workflow_dispatch:
 
 jobs:
-  Explore-GitHub-Actions:
+  Explore-GitHub-Actions-1:
     # You need to use the INSTALLATION_NAME from the previous step
     runs-on: arc-runner-set-aks
     steps:
@@ -14,10 +13,13 @@ jobs:
      - name: Keep job running-1
        run: sleep 360
 
-     - name: Keep job running-2
-       run: sleep 360
+    
+  Explore-GitHub-Actions-2:
 
-     - name: Keep job running-3
-       run: sleep 360
+    runs-on: arc-runner-set-aks
+    steps:
+     - name: Echo message
+       run: echo "🎉 This job uses runner scale set runners!"
 
-  
+     - name: Keep job running-1 
+       run: sleep 360
