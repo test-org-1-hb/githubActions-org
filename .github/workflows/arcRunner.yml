@@ -8,3 +8,12 @@ jobs:
     runs-on: arc-runner-set
     steps:
     - run: echo "🎉 This job uses runner scale set runners!"
+
+    - name: Keep job running-1
+      run: sleep 360
+
+    - name: Keep job running-2
+      run: sleep 360
+
+    - name: Keep job running-3
+      run: sleep 360
