@@ -16,7 +16,7 @@ jobs:
     
   Explore-GitHub-Actions-2:
 
-    runs-on: arc-runner-set-aks
+    runs-on: arc-runner-set
     steps:
      - name: Echo message
        run: echo " This job uses runner scale set runners!"
