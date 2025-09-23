@@ -1,0 +1,35 @@
+name: AKS wf 2(number of job 3)
+on:
+  workflow_dispatch:
+
+jobs:
+  Explore-GitHub-Actions-1:
+    # You need to use the INSTALLATION_NAME from the previous step
+    runs-on: arc-runner-set-aks
+    steps:
+     - name: Echo message
+       run: echo "🎉 This job uses runner scale set runners!"
+
+     - name: Keep job running-1
+       run: sleep 60
+
+    
+  Explore-GitHub-Actions-2:
+
+    runs-on: arc-runner-set-aks
+    steps:
+     - name: Echo message
+       run: echo "🎉 This job uses runner scale set runners!"
+
+     - name: Keep job running-2
+       run: sleep 60
+
+  Explore-GitHub-Actions-3:
+
+    runs-on: arc-runner-set-aks
+    steps:
+     - name: Echo message
+       run: echo "🎉 This job uses runner scale set runners!"
+
+     - name: Keep job running-3 
+       run: sleep 60
