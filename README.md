@@ -59,11 +59,6 @@ The controller is the "brain" of ARC. It's a Kubernetes operator that watches fo
 
 2.  **Configuration for Different Environments**: The controller's behavior can be customized using a `values.yaml` file. Here are some recommended configurations for different environments.
 
-      * **Proof of Concept (POC)**
-
-          * **Goal**: Validate the basic setup.
-          * **Action**: Use the default Helm installation with no custom values. The default resources are sufficient for initial testing.
-
       * **Development (Low Load: 1-5 Concurrent Jobs)**
 
           * **Goal**: Ensure stability on a shared cluster without consuming excessive resources.
