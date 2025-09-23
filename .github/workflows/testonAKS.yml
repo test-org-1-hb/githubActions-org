@@ -8,7 +8,7 @@ jobs:
     runs-on: arc-runner-set-aks
     steps:
      - name: Echo message
-       run: echo "🎉 This job uses runner scale set runners!"
+       run: echo " This job uses runner scale set runners!"
 
      - name: Keep job running-1
        run: sleep 60
@@ -19,7 +19,7 @@ jobs:
     runs-on: arc-runner-set-aks
     steps:
      - name: Echo message
-       run: echo "🎉 This job uses runner scale set runners!"
+       run: echo "This job uses runner scale set runners!"
 
      - name: Keep job running-1 
        run: sleep 60
