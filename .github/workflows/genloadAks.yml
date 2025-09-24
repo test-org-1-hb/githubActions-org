@@ -1,40 +1,31 @@
 name: ARC Node Autoscaling Test
 
-# This workflow can be triggered manually from the Actions tab in your GitHub repository.
 on:
   workflow_dispatch:
 
 jobs:
-  # This job will run multiple instances in parallel to create resource pressure.
   stress-test:
-    # IMPORTANT: You MUST change 'arc-runner-set' to the label that your 
-    # HorizontalRunnerAutoscaler or RunnerDeployment is configured to use.
+    # IMPORTANT: Ensure 'arc-runner-set' matches the label used by your
+    # HorizontalRunnerAutoscaler or RunnerDeployment.
     runs-on: aks-3-arc-runner-set
 
     strategy:
-      # This matrix will create 4 parallel jobs. Adjust this number based on your
-      # node's capacity and how aggressively you want to test scaling.
       matrix:
         job_id: [1, 2, 3, 4]
-      # Ensures that all jobs will run to completion even if one fails.
       fail-fast: false
 
-    # We will use a container to ensure the 'stress-ng' tool is available.
-    container:
-      image: ubuntu:latest
+    # The 'container:' block has been removed.
+    # The steps below will now run directly on the runner pod's OS.
 
     steps:
       - name: Install stress-ng tool
         run: |
           echo "Installing dependencies for Job ID: ${{ matrix.job_id }}"
-          apt-get update -y
-          apt-get install -y stress-ng
+          sudo apt-get update -y
+          sudo apt-get install -y stress-ng
 
       - name: Consume CPU and Memory for 5 minutes
         run: |
           echo "Starting resource consumption for Job ID: ${{ matrix.job_id }}"
-          # This command will stress 1 CPU core to 100% and allocate 1GB of virtual memory.
-          # It will run for 300 seconds (5 minutes) before finishing.
-          # The goal is to keep the runner pod alive long enough for scaling to occur.
           stress-ng --cpu 1 --vm 1 --vm-bytes 1G --timeout 300s
           echo "Job ID: ${{ matrix.job_id }} has finished."
