@@ -11,7 +11,7 @@ jobs:
        run: echo " This job uses runner scale set runners!"
 
      - name: Keep job running-1
-       run: sleep 120
+       run: sleep 300
 
     
   Explore-GitHub-Actions-2:
@@ -22,7 +22,7 @@ jobs:
        run: echo " This job uses runner scale set runners!"
 
      - name: Keep job running-1 
-       run: sleep 120
+       run: sleep 300
 
   Explore-GitHub-Actions-3:
 
@@ -32,7 +32,7 @@ jobs:
        run: echo " This job uses runner scale set runners!"
 
      - name: Keep job running-1 
-       run: sleep 120
+       run: sleep 300
 
   Explore-GitHub-Actions-4:
     runs-on: aks-3-arc-runner-set
@@ -41,7 +41,7 @@ jobs:
        run: echo " This job uses runner scale set runners!"
 
      - name: Keep job running-1 
-       run: sleep 120
+       run: sleep 300
     
   Explore-GitHub-Actions-5:
     runs-on: aks-3-arc-runner-set 
@@ -50,5 +50,5 @@ jobs:
        run: echo " This job uses runner scale set runners!"
 
      - name: Keep job running-1 
-       run: sleep 120
+       run: sleep 300
 
