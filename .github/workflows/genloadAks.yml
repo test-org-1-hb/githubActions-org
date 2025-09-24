@@ -9,7 +9,7 @@ jobs:
   stress-test:
     # IMPORTANT: You MUST change 'arc-runner-set' to the label that your 
     # HorizontalRunnerAutoscaler or RunnerDeployment is configured to use.
-    runs-on: arc-runner-set 
+    runs-on: aks-3-arc-runner-set
 
     strategy:
       # This matrix will create 4 parallel jobs. Adjust this number based on your
