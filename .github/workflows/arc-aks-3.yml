@@ -1,4 +1,4 @@
-name: ARC on minikube 
+name: ARC on aks-3 
 on:
   workflow_dispatch:
 
