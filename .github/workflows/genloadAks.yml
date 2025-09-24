@@ -8,6 +8,8 @@ jobs:
     # IMPORTANT: Ensure 'arc-runner-set' matches the label used by your
     # HorizontalRunnerAutoscaler or RunnerDeployment.
     runs-on: aks-3-arc-runner-set
+    timeout-minutes: 20
+    
 
     strategy:
       matrix:
