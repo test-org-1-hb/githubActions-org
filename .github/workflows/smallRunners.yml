@@ -1,4 +1,4 @@
-name: ARC on aks-3 wf-3
+name: small-runners-AKS
 on:
   workflow_dispatch:
 
