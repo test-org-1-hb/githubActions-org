@@ -1,0 +1,45 @@
+name: small runners
+on:
+  workflow_dispatch:
+
+jobs:
+  Explore-GitHub-Actions-1:
+    # You need to use the INSTALLATION_NAME from the previous step
+    runs-on: arc-runners
+    steps:
+     - name: Echo message
+       run: echo " This job uses runner scale set runners!"
+
+     - name: Keep job running-1
+       run: sleep 300
+
+    
+  Explore-GitHub-Actions-2:
+
+    runs-on: arc-runners
+    steps:
+     - name: Echo message
+       run: echo " This job uses runner scale set runners!"
+
+     - name: Keep job running-1 
+       run: sleep 300
+
+  Explore-GitHub-Actions-3:
+
+    runs-on: arc-runners
+    steps:
+     - name: Echo message
+       run: echo " This job uses runner scale set runners!"
+
+     - name: Keep job running-1 
+       run: sleep 300
+
+  Explore-GitHub-Actions-4:
+    runs-on: arc-runners
+    steps:
+     - name: Echo message
+       run: echo " This job uses runner scale set runners!"
+
+     - name: Keep job running-1 
+       run: sleep 300
+    
