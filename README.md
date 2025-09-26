@@ -256,9 +256,7 @@ Finally, we deploy the `RunnerScaleSet`. This custom resource defines the templa
     ```bash
     kubectl get pods -n arc-runners
     ```
-    Trigger a GitHub Actions workflow in your configured repository that uses `runs-on: self-hosted`. You will see the controller automatically create a new runner pod in the `arc-runners` namespace to execute the job. The `runnerpool` node group will scale up if needed.
+    Trigger a GitHub Actions workflow in your configured repository.
 
-3.  **Check GitHub:**
-    Navigate to your repository or organization's **Settings > Actions > Runners**. You should see the runners appear in the list as they become active. They will be named with the prefix `aks-dind-runner-set-`.
 
 You are all set! Your AKS cluster will now automatically provide ephemeral, container-capable runners for your GitHub Actions workflows.
