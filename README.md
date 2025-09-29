@@ -162,7 +162,7 @@ Finally, we deploy the `RunnerScaleSet`. This custom resource defines the templa
 ```yaml
 runnerScaleSetName: "aks-dind-runner-set" # Or "small-runners", etc.
 namespace: "arc-runners"
-githubConfigUrl: "https://github.com/test-org-1-hb/githubActions-org"
+githubConfigUrl: "(https://github.com/)/<your-org>/<your-repo>"
 existingGithubSecret: "arc-github-secret" # Or "github-secret"
 controllerServiceAccount:
   name: arc-gha-rs-controller
