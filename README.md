@@ -15,7 +15,7 @@ Before you begin, ensure you have the following installed and configured:
 1.  **Azure CLI**: [Installation Guide](https://docs.microsoft.com/en-us/cli/azure/install-azure-cli)
 2.  **kubectl**: [Installation Guide](https://kubernetes.io/docs/tasks/tools/install-kubectl/)
 3.  **Helm**: [Installation Guide](https://helm.sh/docs/intro/install/)
-4.  An **Azure Subscription** with permissions to create resource groups, service principals, and AKS clusters.
+4.  An **Azure Subscription** with permissions to create AKS clusters.
 5.  A **GitHub Personal Access Token (PAT)** with the appropriate scopes. See [Step 3](#step-3-create-a-github-personal-access-token-pat) for details.
 
 ---
