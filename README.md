@@ -112,9 +112,11 @@ ARC needs to authenticate to the GitHub API to register runners. Create a **clas
 3.  Copy the generated token and save it securely. You will need it in creating kubernetes secret.
 4.  create kubernetes secrate
 ```bash
+GITHUB_PAT=ghp_IK9m...........
+
 kubectl create secret generic arc-github-secret \
   --namespace=arc-runners \
-  --from-literal=github_token='YOUR_NEW_GITHUB_PAT'
+  --from-literal=github_token='${GITHUB_PAT}'
 ```
 
 ---
