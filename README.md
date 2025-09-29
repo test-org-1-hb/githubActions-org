@@ -68,7 +68,7 @@ The controller is the brain of the operation. It watches for workflow job events
     # You should monitor the controller's usage and adjust these values for your workload.
     # resources:
     #   limits:
-    #     cpu: "500m"      # 0.5 CPU Core
+    #     cpu: "100m"      # 0.5 CPU Core
     #     memory: "512Mi"  # 512 Mebibytes
     #   requests:
     #     cpu: "500m"
