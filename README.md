@@ -166,8 +166,7 @@ Finally, we deploy the `RunnerScaleSet`. This custom resource defines the templa
     # !! SECURITY WARNING !!
     # Do not commit your PAT to version control.
     # For production, use a pre-existing Kubernetes secret and reference it via `githubConfigSecret.name`.
-    githubConfigSecret:
-      github_token: "<YOUR_GITHUB_PAT>" # <-- CHANGE THIS
+    githubConfigSecret: "arc-github-secret"  # <-- CHANGE THIS FROM THE NAME GIVEN IN STEP 3
 
     # The service account of the controller installed in Step 2
     controllerServiceAccount:
