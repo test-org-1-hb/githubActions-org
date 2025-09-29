@@ -111,8 +111,15 @@ ARC needs to authenticate to the GitHub API to register runners. Create a **clas
     * **For Organization-level Runners**: Select the `admin:org` scope.
 
 3.  Copy the generated token and save it securely. You will need it in [Step 5](#step-5-deploy-the-runner-scale-set).
+4.  create kubernetes secrate
+```bash
+kubectl create secret generic arc-github-secret \
+  --namespace=arc-runners \
+  --from-literal=github_token='YOUR_NEW_GITHUB_PAT'
+```
 
 ---
+
 
 ## Step 4: Add a Dedicated Node Pool for Runners
 
