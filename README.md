@@ -160,10 +160,10 @@ Finally, we deploy the `RunnerScaleSet`. This custom resource defines the templa
     > **IMPORTANT**: You must update the placeholder values (`<...>`) in the file below.
 
 ```yaml
-runnerScaleSetName: "aks-dind-runner-set" # Or "small-runners", etc.
+runnerScaleSetName: "aks-dind-runner-set" # <- give the name you want(You will use the installation name as the value of runs-on in your workflows)
 namespace: "arc-runners"
-githubConfigUrl: "(https://github.com/)/<your-org>/<your-repo>"
-existingGithubSecret: "arc-github-secret" # Or "github-secret"
+githubConfigUrl: "(https://github.com/)/<your-org>/<your-repo>"  #<- change the URL
+existingGithubSecret: "arc-github-secret" 
 controllerServiceAccount:
   name: arc-gha-rs-controller
   namespace: arc-systems
