@@ -75,7 +75,6 @@ The controller is the brain of the operation. It watches for workflow job events
     #     memory: "512Mi"
 
     # Ensures the operator pods are scheduled ONLY on the initial node pool.
-    # The default AKS label for the first node pool is `agentpool: nodepool1`.
     # Verify this label on your nodes if you encounter scheduling issues.
     nodeSelector:
       agentpool: nodepool1
