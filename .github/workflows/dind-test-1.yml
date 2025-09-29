@@ -10,7 +10,7 @@ on:
 jobs:
   build-and-test-docker-image:
     # This is the critical line that tells GitHub to use your self-hosted runners
-    runs-on: aks-3-arc-runner-set
+    runs-on: aks-dind-runner-set
 
     steps:
       - name: 1. Checkout repository code
