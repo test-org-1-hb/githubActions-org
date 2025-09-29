@@ -134,9 +134,6 @@ It's a best practice to run your GitHub Actions jobs on a separate node pool. Th
 We will use a **node taint** (`runners-only=true:NoSchedule`) to ensure that only our runner pods can be scheduled on this pool.
 
 ```bash
-# Use the variables defined in Step 1
-# RESOURCE_GROUP="MyResourceGroup"
-# CLUSTER_NAME="MyAKSCluster"
 
 az aks nodepool add \
   --resource-group $RESOURCE_GROUP \
