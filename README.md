@@ -30,8 +30,7 @@ export RESOURCE_GROUP="MyResourceGroup"
 export CLUSTER_NAME="MyAKSCluster"
 export LOCATION="eastus" # Choose a region that suits you
 
-# Create the Azure Resource Group
-az group create --name $RESOURCE_GROUP --location $LOCATION
+
 
 # Create the AKS Cluster with an initial node pool for system services
 az aks create \
