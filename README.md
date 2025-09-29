@@ -159,8 +159,8 @@ Finally, we deploy the `RunnerScaleSet`. This custom resource defines the templa
 
     > **IMPORTANT**: You must update the placeholder values (`<...>`) in the file below.
 
-    ```yaml
-    runnerScaleSetName: "aks-dind-runner-set" # Or "small-runners", etc.
+```yaml
+runnerScaleSetName: "aks-dind-runner-set" # Or "small-runners", etc.
 namespace: "arc-runners"
 githubConfigUrl: "https://github.com/test-org-1-hb/githubActions-org"
 existingGithubSecret: "arc-github-secret" # Or "github-secret"
@@ -236,7 +236,8 @@ template:
 metrics:
   enabled: false
 
-    ```
+
+```
 
 2.  **Install the runner set using Helm:**
 
