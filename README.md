@@ -160,83 +160,82 @@ Finally, we deploy the `RunnerScaleSet`. This custom resource defines the templa
     > **IMPORTANT**: You must update the placeholder values (`<...>`) in the file below.
 
     ```yaml
-    # runner-values.yml
+    runnerScaleSetName: "aks-dind-runner-set" # Or "small-runners", etc.
+namespace: "arc-runners"
+githubConfigUrl: "https://github.com/test-org-1-hb/githubActions-org"
+existingGithubSecret: "arc-github-secret" # Or "github-secret"
+controllerServiceAccount:
+  name: arc-gha-rs-controller
+  namespace: arc-systems
 
-    runnerScaleSetName: "aks-dind-runner-set" 
-    namespace: "arc-runners"
-    githubConfigUrl: "(https://github.com/)<your-org>/<your-repo>" # <-- CHANGE THIS
-    
-    # !! SECURITY WARNING !!
-    # Do not commit your PAT to version control.
-    # For production, use a pre-existing Kubernetes secret and reference it via `githubConfigSecret.name`.
-    githubConfigSecret: "arc-github-secret"  # <-- CHANGE THIS FROM THE NAME GIVEN IN STEP 3
+# We disable the chart's automatic container mode for full control.
+containerMode:
+  type: ""
 
-    # The service account of the controller installed in Step 2
-    controllerServiceAccount:
-      name: arc-gha-rs-controller
-      namespace: arc-systems
+template:
+  spec:
+    securityContext:
+      # Part 2: Make all containers in the pod members of our chosen GID.
+      fsGroup: 1234
 
-    # We disable the chart's automatic container mode to define our own sidecars.
-    containerMode:
-      type: ""
+    nodeSelector:
+      agentpool: runnerpool
+    tolerations:
+    - key: "runners-only"
+      operator: "Equal"
+      value: "true"
+      effect: "NoSchedule"
 
-    template:
-      spec:
-        # Schedule pods on our dedicated runner node pool
-        nodeSelector:
-          agentpool: runnerpool
-        # Tolerate the taint applied to the runner node pool
-        tolerations:
-        - key: "runners-only"
-          operator: "Equal"
-          value: "true"
-          effect: "NoSchedule"
+    volumes:
+      - name: work
+        emptyDir: {}
+      - name: dind-sock
+        emptyDir: {}
 
-        volumes:
+    containers:
+      # 1. The main runner container
+      - name: "runner"
+        image: "ghcr.io/actions/actions-runner:latest"
+        command: ["/home/runner/run.sh"]
+        resources:
+          requests:
+            cpu: "100m"
+            memory: "256Mi"
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+        env:
+          - name: DOCKER_HOST
+            value: unix:///var/run/docker.sock
+        volumeMounts:
           - name: work
-            emptyDir: {}
+            mountPath: /home/runner/_work
           - name: dind-sock
-            emptyDir: {}
+            mountPath: /var/run
 
-        # We explicitly define two containers: the runner and a Docker-in-Docker (dind) sidecar.
-        containers:
-          # 1. The main runner container
-          - name: "runner"
-            image: "ghcr.io/actions/actions-runner:latest"
-            command: ["/home/runner/run.sh"]
-            resources:
-              requests:
-                cpu: "100m"
-                memory: "256Mi"
-              limits:
-                cpu: "500m"
-                memory: "512Mi"
-            env:
-              - name: DOCKER_HOST
-                value: unix:///var/run/docker.sock
-            volumeMounts:
-              - name: work
-                mountPath: /home/runner/_work
-              - name: dind-sock
-                mountPath: /var/run
+      # 2. The Docker-in-Docker sidecar container
+      - name: "dind"
+        image: "docker:dind"
+        securityContext:
+          privileged: true
+        env:
+          # Part 1: Define the GID we want Docker to use.
+          - name: DOCKER_GROUP_GID
+            value: "1234"
+        args:
+          - dockerd
+          - --host=unix:///var/run/docker.sock
+          # This --group flag tells dockerd to use the GID from the environment variable.
+          - --group=$(DOCKER_GROUP_GID)
+        volumeMounts:
+          - name: work
+            mountPath: /home/runner/_work
+          - name: dind-sock
+            mountPath: /var/run
 
-          # 2. The Docker-in-Docker sidecar container
-          - name: "dind"
-            image: "docker:dind"
-            securityContext:
-              privileged: true
-            args:
-              - dockerd
-              - --host=unix:///var/run/docker.sock
-            volumeMounts:
-              - name: work
-                mountPath: /home/runner/_work
-              - name: dind-sock
-                mountPath: /var/run
+metrics:
+  enabled: false
 
-    # Optional: Disable metrics scraping if you don't use Prometheus
-    metrics:
-      enabled: false
     ```
 
 2.  **Install the runner set using Helm:**
