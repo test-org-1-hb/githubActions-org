@@ -17,33 +17,23 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
       
-      # --- NEW OLLAMA SETUP STEPS ---
       - name: "Install and Run Ollama"
         run: |
-          # Install the Ollama CLI
           curl -fsSL https://ollama.com/install.sh | sh
-          # Start the Ollama server in the background
           ollama serve &
-          # Wait for the server to be ready. This is important!
           sleep 15
           
       - name: "Pull Ollama Model"
         run: |
-          # Pull a model. llama2 is a good default.
-          # This step will be slow on the first run.
           ollama pull llama2
-      # --- END OF OLLAMA SETUP ---
-
+      
       - name: "Setup K8sGPT for Ollama"
-        uses: k8sgpt-ai/k8sgpt-action@v1
+        # <-- FIX: Corrected action name here
+        uses: k8sgpt-ai/k8sgpt-github-action@v1
         with:
-          # Tell K8sGPT to use the Ollama backend
           backend: "ollama"
-          # Point it to the server we just started inside the runner
           baseUrl: "http://localhost:11434"
-          # Specify the model we pulled
           model: "llama2"
-          # No 'key' is needed for Ollama
 
       - name: "Analyze local manifest files"
         run: |
@@ -61,7 +51,6 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
 
-      # --- REPEAT OLLAMA SETUP FOR THIS JOB ---
       - name: "Install and Run Ollama"
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
@@ -71,10 +60,10 @@ jobs:
       - name: "Pull Ollama Model"
         run: |
           ollama pull llama2
-      # --- END OF OLLAMA SETUP ---
-
+      
       - name: "Setup K8sGPT for Ollama"
-        uses: k8sgpt-ai/k8sgpt-action@v1
+        # <-- FIX: Corrected action name here
+        uses: k8sgpt-ai/k8sgpt-github-action@v1
         with:
           backend: "ollama"
           baseUrl: "http://localhost:11434"
