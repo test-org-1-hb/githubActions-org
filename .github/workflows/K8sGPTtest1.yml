@@ -1,0 +1,101 @@
+# .github/workflows/k8sgpt-analysis.yml
+name: K8sGPT (Ollama) Analysis Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+  workflow_dispatch:
+
+jobs:
+  # ============================================
+  # JOB 1: Pre-Deployment Manifest Scan
+  # ============================================
+  scan-manifests:
+    name: "Scan K8s Manifests (Ollama)"
+    runs-on: ubuntu-latest
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+      
+      # --- NEW OLLAMA SETUP STEPS ---
+      - name: "Install and Run Ollama"
+        run: |
+          # Install the Ollama CLI
+          curl -fsSL https://ollama.com/install.sh | sh
+          # Start the Ollama server in the background
+          ollama serve &
+          # Wait for the server to be ready. This is important!
+          sleep 15
+          
+      - name: "Pull Ollama Model"
+        run: |
+          # Pull a model. llama2 is a good default.
+          # This step will be slow on the first run.
+          ollama pull llama2
+      # --- END OF OLLAMA SETUP ---
+
+      - name: "Setup K8sGPT for Ollama"
+        uses: k8sgpt-ai/k8sgpt-action@v1
+        with:
+          # Tell K8sGPT to use the Ollama backend
+          backend: "ollama"
+          # Point it to the server we just started inside the runner
+          baseUrl: "http://localhost:11434"
+          # Specify the model we pulled
+          model: "llama2"
+          # No 'key' is needed for Ollama
+
+      - name: "Analyze local manifest files"
+        run: |
+          echo "Scanning manifest files in the ./k8s directory with Ollama..."
+          k8sgpt analyze --local=./k8s --explain --fail-on-error
+
+  # ==================================================
+  # JOB 2: Deploy and Verify Post-Deployment Health
+  # ==================================================
+  deploy-and-verify:
+    name: "Deploy and Verify Health (Ollama)"
+    runs-on: ubuntu-latest
+    needs: scan-manifests
+    steps:
+      - name: "Checkout code"
+        uses: actions/checkout@v4
+
+      # --- REPEAT OLLAMA SETUP FOR THIS JOB ---
+      - name: "Install and Run Ollama"
+        run: |
+          curl -fsSL https://ollama.com/install.sh | sh
+          ollama serve &
+          sleep 15
+          
+      - name: "Pull Ollama Model"
+        run: |
+          ollama pull llama2
+      # --- END OF OLLAMA SETUP ---
+
+      - name: "Setup K8sGPT for Ollama"
+        uses: k8sgpt-ai/k8sgpt-action@v1
+        with:
+          backend: "ollama"
+          baseUrl: "http://localhost:11434"
+          model: "llama2"
+      
+      - name: "Setup Kubeconfig"
+        run: |
+          mkdir -p $HOME/.kube
+          echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
+          chmod 600 $HOME/.kube/config
+          
+      - name: "Deploy to Cluster"
+        run: |
+          kubectl apply -f ./k8s
+
+      - name: "Wait for deployment to stabilize"
+        run: |
+          echo "Waiting 30 seconds for resources to initialize..."
+          sleep 30
+
+      - name: "Analyze live cluster deployment"
+        run: |
+          echo "Scanning the 'default' namespace with Ollama..."
+          k8sgpt analyze --namespace=default --explain --fail-on-error
