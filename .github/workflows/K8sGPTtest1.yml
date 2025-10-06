@@ -41,7 +41,7 @@ jobs:
       - name: "Install K8sGPT"
         run: |
           curl -LO https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.25/k8sgpt_amd64.deb
-          sudo dpkg -i k8sgpt_amd64.deb
+          sudo dpkg -i k8sgpt_amd64.deb || sudo apt-get install -f -y
       
       - name: "Configure K8sGPT for Ollama"
         run: |
@@ -57,19 +57,24 @@ jobs:
       
       - name: "Wait for deployment to stabilize"
         run: |
-          echo "Waiting 30 seconds for resources to initialize..."
-          sleep 30
+          echo "Waiting 60 seconds for resources to initialize and fail (if issues)..."
+          sleep 60
+      
+      - name: "Check Pod status before analysis"
+        run: |
+          echo "Pod status:"
+          kubectl get pods -o wide
       
       - name: "Analyze temp cluster deployment"
         run: |
-          echo "Scanning the 'default' namespace with Ollama..."
-          output=$(k8sgpt analyze --namespace=default --explain 2>&1)
+          echo "Scanning the 'default' namespace with Ollama (Pods & ReplicaSets)..."
+          output=$(k8sgpt analyze --namespace=default --explain --filter=Pod,ReplicaSet 2>&1)
           echo "$output"
-          if echo "$output" | grep -q "Error:"; then
-            echo "Errors found in analysis—failing job."
+          if echo "$output" | grep -iqE "(error|issue|problem|failed)"; then
+            echo "Issues found in analysis—failing job."
             exit 1
           else
-            echo "No critical errors found."
+            echo "No critical issues found."
           fi
       
       - name: "Cleanup temp cluster"
@@ -107,7 +112,7 @@ jobs:
       - name: "Install K8sGPT"
         run: |
           curl -LO https://github.com/k8sgpt-ai/k8sgpt/releases/download/v0.4.25/k8sgpt_amd64.deb
-          sudo dpkg -i k8sgpt_amd64.deb
+          sudo dpkg -i k8sgpt_amd64.deb || sudo apt-get install -f -y
       
       - name: "Configure K8sGPT for Ollama"
         run: |
@@ -125,17 +130,22 @@ jobs:
 
       - name: "Wait for deployment to stabilize"
         run: |
-          echo "Waiting 30 seconds for resources to initialize..."
-          sleep 30
+          echo "Waiting 60 seconds for resources to initialize and fail (if issues)..."
+          sleep 60
+
+      - name: "Check Pod status before analysis"
+        run: |
+          echo "Pod status:"
+          kubectl get pods -o wide --namespace=default
 
       - name: "Analyze live cluster deployment"
         run: |
-          echo "Scanning the 'default' namespace with Ollama..."
-          output=$(k8sgpt analyze --namespace=default --explain 2>&1)
+          echo "Scanning the 'default' namespace with Ollama (Pods & ReplicaSets)..."
+          output=$(k8sgpt analyze --namespace=default --explain --filter=Pod,ReplicaSet 2>&1)
           echo "$output"
-          if echo "$output" | grep -q "Error:"; then
-            echo "Errors found in analysis—failing job."
+          if echo "$output" | grep -iqE "(error|issue|problem|failed)"; then
+            echo "Issues found in analysis—failing job."
             exit 1
           else
-            echo "No critical errors found."
+            echo "No critical issues found."
           fi
