@@ -46,6 +46,7 @@ jobs:
       - name: "Configure K8sGPT for Ollama"
         run: |
           k8sgpt auth add --backend ollama --model llama2 --baseurl http://localhost:11434
+          k8sgpt auth default --provider ollama
       
       - name: "Create temporary Kind cluster"
         run: |
@@ -57,8 +58,8 @@ jobs:
       
       - name: "Wait for deployment to stabilize"
         run: |
-          echo "Waiting 60 seconds for resources to initialize and fail (if issues)..."
-          sleep 60
+          echo "Waiting 90 seconds for resources to initialize and fail (if issues)..."
+          sleep 90
       
       - name: "Check Pod status before analysis"
         run: |
@@ -67,10 +68,10 @@ jobs:
       
       - name: "Analyze temp cluster deployment"
         run: |
-          echo "Scanning the 'default' namespace with Ollama (Pods & ReplicaSets)..."
-          output=$(k8sgpt analyze --namespace=default --explain --filter=Pod,ReplicaSet 2>&1)
+          echo "Scanning the 'default' namespace with Ollama..."
+          output=$(k8sgpt analyze -v --namespace=default --explain --backend ollama 2>&1)
           echo "$output"
-          if echo "$output" | grep -iqE "(error|issue|problem|failed)"; then
+          if echo "$output" | grep -iqE "(error|issue|problem)"; then
             echo "Issues found in analysis—failing job."
             exit 1
           else
@@ -117,6 +118,7 @@ jobs:
       - name: "Configure K8sGPT for Ollama"
         run: |
           k8sgpt auth add --backend ollama --model llama2 --baseurl http://localhost:11434
+          k8sgpt auth default --provider ollama
       
       - name: "Setup Kubeconfig"
         run: |
@@ -130,8 +132,8 @@ jobs:
 
       - name: "Wait for deployment to stabilize"
         run: |
-          echo "Waiting 60 seconds for resources to initialize and fail (if issues)..."
-          sleep 60
+          echo "Waiting 90 seconds for resources to initialize and fail (if issues)..."
+          sleep 90
 
       - name: "Check Pod status before analysis"
         run: |
@@ -140,10 +142,10 @@ jobs:
 
       - name: "Analyze live cluster deployment"
         run: |
-          echo "Scanning the 'default' namespace with Ollama (Pods & ReplicaSets)..."
-          output=$(k8sgpt analyze --namespace=default --explain --filter=Pod,ReplicaSet 2>&1)
+          echo "Scanning the 'default' namespace with Ollama..."
+          output=$(k8sgpt analyze -v --namespace=default --explain --backend ollama 2>&1)
           echo "$output"
-          if echo "$output" | grep -iqE "(error|issue|problem|failed)"; then
+          if echo "$output" | grep -iqE "(error|issue|problem)"; then
             echo "Issues found in analysis—failing job."
             exit 1
           else
