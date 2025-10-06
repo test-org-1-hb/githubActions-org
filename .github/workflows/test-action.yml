@@ -1,0 +1,25 @@
+name: Action Resolution Test
+
+on:
+  # This allows us to run the workflow manually from the GitHub UI
+  workflow_dispatch:
+
+jobs:
+  test-action-resolution:
+    runs-on: ubuntu-latest
+    steps:
+      - name: A step that will always work
+        run: echo "Starting the test."
+
+      - name: Attempt to resolve the k8sgpt-github-action
+        id: teststep
+        uses: k8sgpt-ai/k8sgpt-github-action@v1
+        with:
+          # We don't need real values, we just need to see if the action can be found.
+          # The step will fail authentication, but that's OK. 
+          # We are looking to see if we get PAST the "repository not found" error.
+          backend: "openai"
+          key: "dummy-key"
+
+      - name: This will only run if the action was found
+        run: echo "Success! The action repository was found and resolved."
