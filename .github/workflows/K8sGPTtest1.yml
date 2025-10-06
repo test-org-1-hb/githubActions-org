@@ -22,14 +22,14 @@ jobs:
           curl -fsSL https://ollama.com/install.sh | sh
           ollama serve &
           sleep 15
-          
+        
       - name: "Pull Ollama Model"
         run: |
           ollama pull llama2
       
       - name: "Setup K8sGPT for Ollama"
         # <-- FIX: Corrected action name here
-        uses: k8sgpt-ai/k8sgpt-github-action@v1
+        uses: k8sgpt-ai/k8sgpt-action@v1 # Corrected action name
         with:
           backend: "ollama"
           baseUrl: "http://localhost:11434"
@@ -56,14 +56,14 @@ jobs:
           curl -fsSL https://ollama.com/install.sh | sh
           ollama serve &
           sleep 15
-          
+        
       - name: "Pull Ollama Model"
         run: |
           ollama pull llama2
       
       - name: "Setup K8sGPT for Ollama"
         # <-- FIX: Corrected action name here
-        uses: k8sgpt-ai/k8sgpt-github-action@v1
+        uses: k8sgpt-ai/k8sgpt-action@v1 # Corrected action name
         with:
           backend: "ollama"
           baseUrl: "http://localhost:11434"
@@ -74,7 +74,7 @@ jobs:
           mkdir -p $HOME/.kube
           echo "${{ secrets.KUBE_CONFIG }}" | base64 --decode > $HOME/.kube/config
           chmod 600 $HOME/.kube/config
-          
+        
       - name: "Deploy to Cluster"
         run: |
           kubectl apply -f ./k8s
