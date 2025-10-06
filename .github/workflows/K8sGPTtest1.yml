@@ -16,6 +16,18 @@ jobs:
       - name: "Checkout code"
         uses: actions/checkout@v4
       
+      - name: "Install kubectl"
+        run: |
+          curl -LO "https://dl.k8s.io/release/v1.31.1/bin/linux/amd64/kubectl"
+          chmod +x kubectl
+          sudo mv kubectl /usr/local/bin/
+      
+      - name: "Install Kind"
+        run: |
+          curl -Lo ./kind https://kind.sigs.k8s.io/dl/v0.24.0/kind-linux-amd64
+          chmod +x ./kind
+          sudo mv ./kind /usr/local/bin/
+      
       - name: "Install and Run Ollama"
         run: |
           curl -fsSL https://ollama.com/install.sh | sh
@@ -34,11 +46,29 @@ jobs:
       - name: "Configure K8sGPT for Ollama"
         run: |
           k8sgpt auth add --backend ollama --model llama2 --baseurl http://localhost:11434
-
-      - name: "Analyze local manifest files"
+      
+      - name: "Create temporary Kind cluster"
         run: |
-          echo "Scanning manifest files in the ./k8s directory with Ollama..."
-          k8sgpt analyze --local=./k8s --explain --fail-on-error
+          kind create cluster --name k8sgpt-scan
+      
+      - name: "Deploy manifests to temp cluster"
+        run: |
+          kubectl apply -f ./k8s
+      
+      - name: "Wait for deployment to stabilize"
+        run: |
+          echo "Waiting 30 seconds for resources to initialize..."
+          sleep 30
+      
+      - name: "Analyze temp cluster deployment"
+        run: |
+          echo "Scanning the 'default' namespace with Ollama..."
+          k8sgpt analyze --namespace=default --explain --fail-on-error
+      
+      - name: "Cleanup temp cluster"
+        if: always()
+        run: |
+          kind delete cluster --name k8sgpt-scan
 
   # ==================================================
   # JOB 2: Deploy and Verify Post-Deployment Health
